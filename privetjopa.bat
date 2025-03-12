@@ -1,1 +1,1 @@
-echo xa loh 
+echo xa loh > primer.txt 

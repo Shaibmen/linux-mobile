@@ -17,13 +17,24 @@ func ImportBashFile(c *gin.Context) {
 	}
 
 	namefile := bashfile.NameField + ".bat"
-	command := fmt.Sprintf("echo %v > %v", bashfile.TextField, namefile)
+	command := fmt.Sprintf("echo %s > %s", string(bashfile.TextField), namefile)
 	cmd := exec.Command("cmd.exe", "/C", command)
-	output, err := cmd.CombinedOutput()
+	err := cmd.Run()
 	if err != nil {
-		c.JSON(500, gin.H{"error": err})
+		c.JSON(500, nil)
 		return
 	}
 
-	c.JSON(200, gin.H{"output": output})
+	ExecuteFile(namefile)
+
+	c.JSON(200, gin.H{"output": "200 ФАЙЛ СОЗДАН - ЗАПУЩЕН"})
+
+}
+
+func ExecuteFile(namefile string) {
+	cmd := exec.Command("cmd.exe", "/C", namefile)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
