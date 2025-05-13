@@ -57,7 +57,7 @@ func Kill(c *gin.Context) {
 		return
 	}
 
-	output, err := exec.Command("kill").Output()
+	output, err := exec.Command("kill", request.ID).Output()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -73,7 +73,7 @@ func Terminate(c *gin.Context) {
 		return
 	}
 
-	output, err := exec.Command("kill", "-9").Output()
+	output, err := exec.Command("kill", "-9", request.ID).Output()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
