@@ -15,5 +15,5 @@ func StartServer() {
 
 	server.POST("/bashPoint_execute", handlers.ImportBashFile)
 
-	server.Run(":8081")
+	server.Run(":3000")
 }
