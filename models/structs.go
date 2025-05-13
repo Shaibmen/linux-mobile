@@ -12,5 +12,5 @@ type ErrorLog struct {
 type Resource struct {
 	Memory []string
 	Disk   []string
-	CPU    string
+	CPU    []string
 }
