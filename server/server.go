@@ -10,7 +10,7 @@ func StartServer() {
 	server := gin.Default()
 
 	server.GET("/enterPoint", handlers.ConnectPoint)
-	server.GET("/resourceMonitoring", handlers.ResourceMonitoring)
+	server.GET("/resource", handlers.ResourceMonitoring)
 	server.GET("/networkMonitoring", handlers.NetworkMonitoring)
 
 	server.POST("/bashPoint_execute", handlers.ImportBashFile)
