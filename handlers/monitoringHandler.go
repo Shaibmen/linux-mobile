@@ -55,7 +55,7 @@ func NetworkMonitoring(c *gin.Context) {
 
 	netLines := AddLines(netstat)
 
-	ssi, err := RunAndSplit("ss", "-i")
+	ssi, err := RunAndSplit("ss", "-s")
 	if err != nil {
 		c.JSON(500, err)
 		return
