@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 	"os/exec"
-	"server/structs"
+	structs "server/models"
 
 	"github.com/gin-gonic/gin"
 )
