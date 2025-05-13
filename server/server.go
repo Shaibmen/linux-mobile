@@ -13,6 +13,9 @@ func StartServer() {
 	server.GET("/resource", handlers.ResourceMonitoring)
 	server.GET("/network", handlers.NetworkMonitoring)
 
+	server.GET("/process", handlers.ProccesGet)
+	server.POST("/process/grep", handlers.ProcessGrep)
+
 	server.POST("/bash/execute", handlers.ImportBashFile)
 
 	server.Run(":3000")

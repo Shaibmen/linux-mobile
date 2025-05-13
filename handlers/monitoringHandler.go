@@ -1,34 +1,34 @@
 package handlers
 
 import (
-	"errors"
-	"os/exec"
+	"net/http"
 	"server/models"
+	"server/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 func ResourceMonitoring(c *gin.Context) {
-	lines, err := RunAndSplit("free", "-h")
+	lines, err := utils.RunAndSplit("free", "-h")
 	if err != nil || len(lines) < 2 {
-		c.JSON(500, err)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
 	memLines := strings.TrimSpace(lines[1])
 
-	lines, err = RunAndSplit("df", "-h")
+	lines, err = utils.RunAndSplit("df", "-h")
 	if err != nil || len(lines) < 1 {
-		c.JSON(500, err)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	diskLines := AddLines(lines)
+	diskLines := utils.AddLines(lines)
 
-	lines, err = RunAndSplit("top", "-b", "n1")
+	lines, err = utils.RunAndSplit("top", "-b", "n1")
 	if err != nil || len(lines) < 3 {
-		c.JSON(500, err)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
@@ -38,7 +38,7 @@ func ResourceMonitoring(c *gin.Context) {
 		strings.TrimSpace(lines[2]),
 	}
 
-	c.JSON(200, models.Resource{
+	c.JSON(http.StatusOK, models.Resource{
 		Memory: memLines,
 		Disk:   diskLines,
 		CPU:    cpuLines,
@@ -47,59 +47,25 @@ func ResourceMonitoring(c *gin.Context) {
 }
 
 func NetworkMonitoring(c *gin.Context) {
-	netstat, err := RunAndSplit("netstat", "-i")
+	netstat, err := utils.RunAndSplit("netstat", "-i")
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	netLines := AddLines(netstat)
+	netLines := utils.AddLines(netstat)
 
-	ssi, err := RunAndSplit("ss", "-s")
+	ssi, err := utils.RunAndSplit("ss", "-s")
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	ssiLines := AddLines(ssi)
+	ssiLines := utils.AddLines(ssi)
 
-	c.JSON(200, models.Network{
+	c.JSON(http.StatusOK, models.Network{
 		Netstat: netLines,
 		Ssi:     ssiLines,
 	})
 
-}
-
-func Split(out []byte) ([]string, error) {
-	lines := strings.Split(string(out), "\n")
-	if len(lines) < 2 {
-		return nil, errors.New("неверный формат выхода команды")
-	}
-	return lines, nil
-}
-
-func RunAndSplit(cmd string, args ...string) ([]string, error) {
-	out, err := exec.Command(cmd, args...).Output()
-	if err != nil {
-		return nil, err
-	}
-
-	lines, err := Split(out)
-	if err != nil {
-		return nil, err
-	}
-	return lines, nil
-}
-
-func AddLines(lines []string) []string {
-
-	var output []string
-
-	for _, line := range lines {
-		if strings.TrimSpace(line) == "" {
-			continue
-		}
-		output = append(output, line)
-	}
-	return output
 }

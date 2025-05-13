@@ -19,3 +19,11 @@ type Network struct {
 	Netstat []string
 	Ssi     []string
 }
+
+type Process struct {
+	Process []string
+}
+
+type ProcessGrep struct {
+	Prefix string `json:"prefix"`
+}
