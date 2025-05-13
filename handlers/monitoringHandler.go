@@ -34,8 +34,8 @@ func ResourceMonitoring(c *gin.Context) {
 
 	cpuLines := []string{
 		strings.TrimSpace(lines[0]),
-		strings.TrimSpace(lines[0]),
-		strings.TrimSpace(lines[0]),
+		strings.TrimSpace(lines[1]),
+		strings.TrimSpace(lines[2]),
 	}
 
 	c.JSON(200, models.Resource{
