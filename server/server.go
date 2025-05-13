@@ -9,11 +9,11 @@ import (
 func StartServer() {
 	server := gin.Default()
 
-	server.GET("/enterPoint", handlers.ConnectPoint)
+	server.GET("/enter", handlers.ConnectPoint)
 	server.GET("/resource", handlers.ResourceMonitoring)
-	server.GET("/networkMonitoring", handlers.NetworkMonitoring)
+	server.GET("/network", handlers.NetworkMonitoring)
 
-	server.POST("/bashPoint_execute", handlers.ImportBashFile)
+	server.POST("/bash/execute", handlers.ImportBashFile)
 
 	server.Run(":3000")
 }
