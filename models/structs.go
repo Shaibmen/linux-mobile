@@ -27,3 +27,7 @@ type Process struct {
 type ProcessGrep struct {
 	Prefix string `json:"prefix"`
 }
+
+type PID struct {
+	ID string `json:"id"`
+}

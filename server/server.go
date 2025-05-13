@@ -15,6 +15,8 @@ func StartServer() {
 
 	server.GET("/process", handlers.ProccesGet)
 	server.POST("/process/grep", handlers.ProcessGrep)
+	server.POST("/process/kill", handlers.Kill)
+	server.POST("/process/terminate", handlers.Terminate)
 
 	server.POST("/bash/execute", handlers.ImportBashFile)
 

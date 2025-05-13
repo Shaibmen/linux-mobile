@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"os/exec"
 	"server/models"
 	"server/utils"
 	"strings"
@@ -47,4 +48,35 @@ func ProcessGrep(c *gin.Context) {
 	c.JSON(http.StatusOK, models.Process{
 		Process: psLines,
 	})
+}
+
+func Kill(c *gin.Context) {
+	var request models.PID
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	output, err := exec.Command("kill").Output()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusAccepted, output)
+}
+
+func Terminate(c *gin.Context) {
+	var request models.PID
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+
+	output, err := exec.Command("kill", "-9").Output()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusAccepted, output)
 }
