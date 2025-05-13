@@ -10,69 +10,96 @@ import (
 )
 
 func ResourceMonitoring(c *gin.Context) {
-	out, err := exec.Command("free", "-h").Output()
-	if err != nil {
+	lines, err := RunAndSplit("free", "-h")
+	if err != nil || len(lines) < 2 {
 		c.JSON(500, err)
+		return
 	}
 
-	lines, err := Split(out)
-	if err != nil {
+	memLines := strings.TrimSpace(lines[1])
+
+	lines, err = RunAndSplit("df", "-h")
+	if err != nil || len(lines) < 1 {
 		c.JSON(500, err)
+		return
 	}
 
-	memLine := strings.Fields(lines[1])
+	diskLines := AddLines(lines)
 
-	out, err = exec.Command("df", "-h").Output()
-	if err != nil {
+	lines, err = RunAndSplit("top", "-b", "n1")
+	if err != nil || len(lines) < 3 {
 		c.JSON(500, err)
+		return
 	}
 
-	lines, err = Split(out)
-	if err != nil {
-		c.JSON(500, err)
+	cpuLines := []string{
+		strings.TrimSpace(lines[0]),
+		strings.TrimSpace(lines[0]),
+		strings.TrimSpace(lines[0]),
 	}
-
-	diskLine := strings.Fields(lines[1])
-
-	out, err = exec.Command("top", "-b", "n1").Output()
-	if err != nil {
-		c.JSON(500, err)
-	}
-
-	lines, err = Split(out)
-	if err != nil {
-		c.JSON(500, err)
-	}
-
-	cpuLine1 := strings.Fields(lines[0])
-	cpuLine2 := strings.Fields(lines[1])
-	cpuLine3 := strings.Fields(lines[2])
-
-	combined := append(cpuLine1, cpuLine2...)
-	combined = append(combined, cpuLine3...)
 
 	c.JSON(200, models.Resource{
-		Memory: memLine,
-		Disk:   diskLine,
-		CPU:    combined,
+		Memory: memLines,
+		Disk:   diskLines,
+		CPU:    cpuLines,
 	})
 
 }
 
 func NetworkMonitoring(c *gin.Context) {
-	cmd := exec.Command("cmd.exe", "/C", "chcp 65001 && ipconfig")
-	output, err := cmd.CombinedOutput()
+	netstat, err := RunAndSplit("netstat", "-i")
 	if err != nil {
-		c.JSON(500, gin.H{"error": err})
+		c.JSON(500, err)
+		return
 	}
 
-	c.JSON(200, gin.H{"output": string(output)})
+	netLines := AddLines(netstat)
+
+	ssi, err := RunAndSplit("ss", "-i")
+	if err != nil {
+		c.JSON(500, err)
+		return
+	}
+
+	ssiLines := AddLines(ssi)
+
+	c.JSON(200, models.Network{
+		Netstat: netLines,
+		Ssi:     ssiLines,
+	})
+
 }
 
 func Split(out []byte) ([]string, error) {
 	lines := strings.Split(string(out), "\n")
 	if len(lines) < 2 {
-		return nil, errors.New("неверный формат вывода free -h")
+		return nil, errors.New("неверный формат выхода команды")
 	}
 	return lines, nil
+}
+
+func RunAndSplit(cmd string, args ...string) ([]string, error) {
+	out, err := exec.Command(cmd, args...).Output()
+	if err != nil {
+		return nil, err
+	}
+
+	lines, err := Split(out)
+	if err != nil {
+		return nil, err
+	}
+	return lines, nil
+}
+
+func AddLines(lines []string) []string {
+
+	var output []string
+
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		output = append(output, line)
+	}
+	return output
 }

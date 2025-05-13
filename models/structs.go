@@ -10,7 +10,12 @@ type ErrorLog struct {
 }
 
 type Resource struct {
-	Memory []string
+	Memory string
 	Disk   []string
 	CPU    []string
+}
+
+type Network struct {
+	Netstat []string
+	Ssi     []string
 }
