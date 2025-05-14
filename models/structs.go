@@ -31,3 +31,7 @@ type ProcessGrep struct {
 type PID struct {
 	ID string `json:"id"`
 }
+
+type Folder struct {
+	Path string `json:"path"`
+}
