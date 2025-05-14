@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ProccesGet(c *gin.Context) {
+func GetProcess(c *gin.Context) {
 
 	process, err := utils.RunAndSplit("top", "-b", "-n", "1")
 	if err != nil {

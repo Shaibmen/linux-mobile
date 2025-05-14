@@ -24,6 +24,10 @@ type Process struct {
 	Process []string
 }
 
+type Folder struct {
+	Files []string
+}
+
 type ProcessGrep struct {
 	Prefix string `json:"prefix"`
 }
@@ -32,6 +36,6 @@ type PID struct {
 	ID string `json:"id"`
 }
 
-type Folder struct {
+type FileJson struct {
 	Path string `json:"path"`
 }
