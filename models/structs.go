@@ -33,7 +33,7 @@ type PID struct {
 
 type Dir struct {
 	Path  string `json:"path"`
-	Force bool   `json:"flag"`
+	Force bool   `json:"force"`
 }
 
 type BashFile struct {
