@@ -78,8 +78,7 @@ func RemoveAny(c *gin.Context) {
 		if request.Force {
 			os.RemoveAll(request.Path)
 			c.JSON(http.StatusOK, gin.H{"out": "Форсированое удаление завершено"})
-		}
-		if isempty {
+		} else if isempty {
 			os.Remove(request.Path)
 			c.JSON(http.StatusOK, gin.H{"out": "Удаление завершено"})
 		} else {
