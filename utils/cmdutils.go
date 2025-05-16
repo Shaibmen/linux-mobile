@@ -69,3 +69,12 @@ func CheckIsDir(path string) (bool, error) {
 	}
 	return info.IsDir(), nil
 }
+
+func IsDirEmpty(path string) (bool, error) {
+	infolder, err := os.ReadDir(path)
+	if err != nil {
+		return false, err
+	}
+
+	return len(infolder) == 0, nil
+}

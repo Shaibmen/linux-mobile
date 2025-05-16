@@ -65,6 +65,11 @@ func RemoveAny(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+	isempty, err := utils.IsDirEmpty(request.Path)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 	switch isdir {
 	case false:
 		os.Remove(request.Path)
@@ -73,10 +78,13 @@ func RemoveAny(c *gin.Context) {
 		if request.Force {
 			os.RemoveAll(request.Path)
 			c.JSON(http.StatusOK, gin.H{"out": "Форсированое удаление завершено"})
-		} else {
+		}
+		if isempty {
 			os.Remove(request.Path)
 			c.JSON(http.StatusOK, gin.H{"out": "Удаление завершено"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"out": "Папка не пуста, воспользуйтесь force"})
+			return
 		}
 	}
-
 }
