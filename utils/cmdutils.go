@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -38,4 +39,33 @@ func AddLines(lines []string) []string {
 		output = append(output, line)
 	}
 	return output
+}
+
+func IsSafePath(path string) bool {
+	unsafe := []string{"/", "/bin", "/sbin", "/usr", "/lib", "/lib64", "/etc", "/var", "/boot", "/dev", "/proc", "/sys", "/root"}
+	for _, p := range unsafe {
+		if path == p || strings.HasPrefix(path, p+"/") {
+			return false
+		}
+	}
+	return true
+}
+
+func CheckPath(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func CheckIsDir(path string) (bool, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+	return info.IsDir(), nil
 }

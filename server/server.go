@@ -21,6 +21,7 @@ func StartServer() {
 	server.POST("/bash/execute", handlers.ImportBashFile)
 
 	server.POST("/folder", handlers.GetFolder)
+	server.POST("/folder/remove", handlers.RemoveAny)
 
 	server.Run(":3000")
 }

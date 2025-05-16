@@ -1,10 +1,5 @@
 package models
 
-type BashFile struct {
-	NameField string `json:"nameField"`
-	TextField string `json:"textField"`
-}
-
 type ErrorLog struct {
 	err error
 }
@@ -36,6 +31,12 @@ type PID struct {
 	ID string `json:"id"`
 }
 
-type FileJson struct {
-	Path string `json:"path"`
+type Dir struct {
+	Path  string `json:"path"`
+	Force bool   `json:"flag"`
+}
+
+type BashFile struct {
+	NameField string `json:"nameField"`
+	TextField string `json:"textField"`
 }
