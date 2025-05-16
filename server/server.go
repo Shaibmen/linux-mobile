@@ -2,6 +2,7 @@ package server
 
 import (
 	"server/handlers"
+	"server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,20 +10,23 @@ import (
 func StartServer() {
 	server := gin.Default()
 
-	server.GET("/enter", handlers.ConnectPoint)
-	server.GET("/resource", handlers.ResourceMonitoring)
-	server.GET("/network", handlers.NetworkMonitoring)
+	authorized := server.Group("/", middleware.CheckAuth())
+	{
+		authorized.GET("/enter", handlers.ConnectPoint)
+		authorized.GET("/resource", handlers.ResourceMonitoring)
+		authorized.GET("/network", handlers.NetworkMonitoring)
 
-	server.GET("/process", handlers.GetProcess)
-	server.POST("/process/grep", handlers.ProcessGrep)
-	server.POST("/process/kill", handlers.Kill)
-	server.POST("/process/terminate", handlers.Terminate)
+		authorized.GET("/process", handlers.GetProcess)
+		authorized.POST("/process/grep", handlers.ProcessGrep)
+		authorized.POST("/process/kill", handlers.Kill)
+		authorized.POST("/process/terminate", handlers.Terminate)
 
-	server.POST("/bash/create", handlers.CreateBash)
-	server.POST("/bash/execute", handlers.ExecuteFile)
+		authorized.POST("/bash/create", handlers.CreateBash)
+		authorized.POST("/bash/execute", handlers.ExecuteFile)
 
-	server.POST("/folder", handlers.GetFolder)
-	server.POST("/folder/remove", handlers.RemoveAny)
+		authorized.POST("/folder", handlers.GetFolder)
+		authorized.POST("/folder/remove", handlers.RemoveAny)
+	}
 
 	server.Run(":3000")
 }
