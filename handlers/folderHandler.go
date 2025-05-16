@@ -28,17 +28,34 @@ func GetFolder(c *gin.Context) {
 		return
 	}
 
-	folder, err := utils.RunAndSplit("ls", "-l", request.Path)
+	isdir, err := utils.CheckIsDir(request.Path)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 
-	folderLines := utils.AddLines(folder)
+	if isdir {
+		folder, err := utils.RunAndSplit("ls", "-l", request.Path)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
 
-	c.JSON(http.StatusOK, models.Folder{
-		Files: folderLines,
-	})
+		folderLines := utils.AddLines(folder)
+
+		c.JSON(http.StatusOK, models.Folder{
+			Files: folderLines,
+		})
+	} else {
+		file, err := os.ReadFile(request.Path)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+		c.JSON(http.StatusOK, models.File{
+			Data: string(file),
+		})
+	}
 
 }
 

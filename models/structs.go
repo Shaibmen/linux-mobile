@@ -23,6 +23,10 @@ type Folder struct {
 	Files []string
 }
 
+type File struct {
+	Data string
+}
+
 type BashOut struct {
 	Out   string
 	Error string
