@@ -33,7 +33,7 @@ func CreateBash(c *gin.Context) {
 		return
 	}
 
-	err = os.Chmod(request.NameField+".sh", 0755)
+	err = os.Chmod(homedir+"/bash_scripts/"+request.NameField+".sh", 0755)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
