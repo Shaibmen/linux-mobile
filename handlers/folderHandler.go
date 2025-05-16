@@ -70,6 +70,12 @@ func RemoveAny(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	if !utils.IsSafePath(request.Path) {
+		c.JSON(http.StatusBadRequest, gin.H{"out": "Запрещённый путь"})
+		return
+	}
+
 	switch isdir {
 	case false:
 		os.Remove(request.Path)
