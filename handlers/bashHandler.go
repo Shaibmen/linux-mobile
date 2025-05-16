@@ -22,7 +22,7 @@ func CreateBash(c *gin.Context) {
 		return
 	}
 
-	file, err := os.Create("/home/" + homedir + "/bash_scripts/" + request.NameField + ".sh")
+	file, err := os.Create(homedir + "/bash_scripts/" + request.NameField + ".sh")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
@@ -45,7 +45,7 @@ func ExecuteFile(c *gin.Context) {
 		return
 	}
 
-	cmd := exec.Command("bash", "/home/"+homedir+"/bash_scripts/"+request.NameField)
+	cmd := exec.Command("bash", homedir+"/bash_scripts/"+request.NameField)
 	out := cmd.Stdout
 	outerr := cmd.Stderr
 
