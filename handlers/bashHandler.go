@@ -45,7 +45,7 @@ func ExecuteFile(c *gin.Context) {
 		return
 	}
 
-	cmd := exec.Command("bash", homedir+"/bash_scripts/"+request.NameField)
+	cmd := exec.Command("bash", homedir+"/bash_scripts/"+request.NameField+".sh")
 	out := cmd.Stdout
 	outerr := cmd.Stderr
 
