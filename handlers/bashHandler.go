@@ -32,6 +32,12 @@ func CreateBash(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
+
+	err = os.Chmod(request.NameField+".sh", 0755)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 }
 
 func ExecuteFile(c *gin.Context) {
