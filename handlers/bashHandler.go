@@ -1,40 +1,62 @@
 package handlers
 
 import (
-	"fmt"
+	"net/http"
+	"os"
 	"os/exec"
+	"server/models"
 	structs "server/models"
+	"server/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ImportBashFile(c *gin.Context) {
-	var bashfile structs.BashFile
+func CreateBash(c *gin.Context) {
 
-	if err := c.BindJSON(&bashfile); err != nil {
-		c.JSON(500, err)
+	homedir := utils.HomeDir()
+
+	var request structs.BashFile
+
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, err)
 		return
 	}
 
-	namefile := bashfile.NameField + ".bat"
-	command := fmt.Sprintf("echo %s > %s", string(bashfile.TextField), namefile)
-	cmd := exec.Command("cmd.exe", "/C", command)
-	err := cmd.Run()
+	file, err := os.Create("/home/" + homedir + "/bash_scripts/" + request.NameField + ".sh")
 	if err != nil {
-		c.JSON(500, nil)
+		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-
-	ExecuteFile(namefile)
-
-	c.JSON(200, gin.H{"output": "200 ФАЙЛ СОЗДАН - ЗАПУЩЕН"})
-
+	_, err = file.WriteString(request.TextField)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
 }
 
-func ExecuteFile(namefile string) {
-	cmd := exec.Command("cmd.exe", "/C", namefile)
+func ExecuteFile(c *gin.Context) {
+
+	homedir := utils.HomeDir()
+
+	var request structs.BashFile
+
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	cmd := exec.Command("bash", "/home/"+homedir+"/bash_scripts/"+request.NameField)
+	out := cmd.Stdout
+	outerr := cmd.Stderr
+
 	err := cmd.Run()
 	if err != nil {
-		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err)
+		return
 	}
+	result := models.BashOut{
+		Out:   out,
+		Error: outerr,
+	}
+	c.JSON(http.StatusOK, result)
 }

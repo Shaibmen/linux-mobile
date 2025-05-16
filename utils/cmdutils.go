@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
 )
 
@@ -77,4 +78,10 @@ func IsDirEmpty(path string) (bool, error) {
 	}
 
 	return len(infolder) == 0, nil
+}
+
+func HomeDir() string {
+	usr, _ := user.Current()
+	homedir := usr.HomeDir
+	return homedir
 }

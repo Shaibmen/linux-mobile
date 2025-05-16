@@ -18,7 +18,8 @@ func StartServer() {
 	server.POST("/process/kill", handlers.Kill)
 	server.POST("/process/terminate", handlers.Terminate)
 
-	server.POST("/bash/execute", handlers.ImportBashFile)
+	server.POST("/bash/create", handlers.CreateBash)
+	server.POST("/bash/execute", handlers.ExecuteFile)
 
 	server.POST("/folder", handlers.GetFolder)
 	server.POST("/folder/remove", handlers.RemoveAny)

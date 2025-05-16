@@ -1,5 +1,7 @@
 package models
 
+import "io"
+
 type ErrorLog struct {
 	err error
 }
@@ -21,6 +23,11 @@ type Process struct {
 
 type Folder struct {
 	Files []string
+}
+
+type BashOut struct {
+	Out   io.Writer
+	Error io.Writer
 }
 
 type ProcessGrep struct {
