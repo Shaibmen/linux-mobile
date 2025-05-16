@@ -52,17 +52,16 @@ func ExecuteFile(c *gin.Context) {
 	}
 
 	cmd := exec.Command("bash", homedir+"/bash_scripts/"+request.NameField+".sh")
-	out := cmd.Stdout
-	outerr := cmd.Stderr
-
-	err := cmd.Run()
+	output, err := cmd.CombinedOutput()
+	result := models.BashOut{
+		Out:   string(output),
+		Error: "",
+	}
 	if err != nil {
+		result.Error = err.Error()
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	result := models.BashOut{
-		Out:   out,
-		Error: outerr,
-	}
+
 	c.JSON(http.StatusOK, result)
 }
