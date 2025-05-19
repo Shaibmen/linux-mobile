@@ -12,32 +12,30 @@ import (
 func GetFolder(c *gin.Context) {
 	var request models.Dir
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		utils.RespondWithError(c, http.StatusBadRequest, "Неправильные данные", err)
 		return
 	}
 
 	exists, err := utils.CheckPath(request.Path)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка проверки пути", err)
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"out": "нет такого пути",
-		})
+		utils.RespondWithError(c, http.StatusBadRequest, "Нет такого пути", err)
 		return
 	}
 
 	isdir, err := utils.CheckIsDir(request.Path)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка проверки на папку", err)
 		return
 	}
 
 	if isdir {
 		folder, err := utils.RunAndSplit("ls", "-l", request.Path)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся сформировать ответ", err)
 			return
 		}
 
@@ -49,7 +47,7 @@ func GetFolder(c *gin.Context) {
 	} else {
 		file, err := os.ReadFile(request.Path)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, err)
+			utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся прочитать файл", err)
 			return
 		}
 		c.JSON(http.StatusOK, models.File{
@@ -62,34 +60,32 @@ func GetFolder(c *gin.Context) {
 func RemoveAny(c *gin.Context) {
 	var request models.Dir
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		utils.RespondWithError(c, http.StatusBadRequest, "Неправильные данные", err)
 		return
 	}
 	exists, err := utils.CheckPath(request.Path)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся проверить путь", err)
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"out": "нет такого пути",
-		})
+		utils.RespondWithError(c, http.StatusBadRequest, "Такого пути не существует", err)
 		return
 	}
 
 	isdir, err := utils.CheckIsDir(request.Path)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка проверки на папку", err)
 		return
 	}
 	isempty, err := utils.IsDirEmpty(request.Path)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Проверка на вложенность папки не удалась", err)
 		return
 	}
 
 	if !utils.IsSafePath(request.Path) {
-		c.JSON(http.StatusBadRequest, gin.H{"out": "Запрещённый путь"})
+		utils.RespondWithError(c, http.StatusInternalServerError, "Запрещённый путь", err)
 		return
 	}
 
@@ -105,7 +101,7 @@ func RemoveAny(c *gin.Context) {
 			os.Remove(request.Path)
 			c.JSON(http.StatusOK, gin.H{"out": "Удаление завершено"})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"out": "Папка не пуста, воспользуйтесь force"})
+			utils.RespondWithError(c, http.StatusBadRequest, "Папка не пуста воспользуйтесь флагом Force", err)
 			return
 		}
 	}

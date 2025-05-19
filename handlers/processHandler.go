@@ -14,7 +14,7 @@ func GetProcess(c *gin.Context) {
 
 	process, err := utils.RunAndSplit("top", "-b", "-n", "1")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на top", err)
 		return
 	}
 	processLines := utils.AddLines(process)
@@ -28,13 +28,13 @@ func ProcessGrep(c *gin.Context) {
 
 	var request models.ProcessGrep
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusBadRequest, "не правильные данные", err)
 		return
 	}
 
 	ps, err := utils.RunAndSplit("ps", "aux")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на ps aux", err)
 		return
 	}
 
@@ -53,13 +53,13 @@ func ProcessGrep(c *gin.Context) {
 func Kill(c *gin.Context) {
 	var request models.PID
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusBadRequest, "не правильные данные", err)
 		return
 	}
 
 	output, err := exec.Command("kill", request.ID).Output()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось мягко завершить процесс", err)
 		return
 	}
 
@@ -69,13 +69,13 @@ func Kill(c *gin.Context) {
 func Terminate(c *gin.Context) {
 	var request models.PID
 	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusBadRequest, "не правильные данные", err)
 		return
 	}
 
 	output, err := exec.Command("kill", "-9", request.ID).Output()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось жёстко завершить процесс", err)
 		return
 	}
 	c.JSON(http.StatusAccepted, output)

@@ -12,7 +12,7 @@ import (
 func ResourceMonitoring(c *gin.Context) {
 	lines, err := utils.RunAndSplit("free", "-h")
 	if err != nil || len(lines) < 2 {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на ОЗУ", err)
 		return
 	}
 
@@ -20,7 +20,7 @@ func ResourceMonitoring(c *gin.Context) {
 
 	lines, err = utils.RunAndSplit("df", "-h")
 	if err != nil || len(lines) < 1 {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на Storage", err)
 		return
 	}
 
@@ -28,7 +28,7 @@ func ResourceMonitoring(c *gin.Context) {
 
 	lines, err = utils.RunAndSplit("top", "-b", "n1")
 	if err != nil || len(lines) < 3 {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на CPU", err)
 		return
 	}
 
@@ -49,7 +49,7 @@ func ResourceMonitoring(c *gin.Context) {
 func NetworkMonitoring(c *gin.Context) {
 	netstat, err := utils.RunAndSplit("netstat", "-i")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на NetStat", err)
 		return
 	}
 
@@ -57,7 +57,7 @@ func NetworkMonitoring(c *gin.Context) {
 
 	ssi, err := utils.RunAndSplit("ss", "-s")
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на SSI", err)
 		return
 	}
 

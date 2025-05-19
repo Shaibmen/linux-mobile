@@ -1,7 +1,14 @@
 package handlers
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+	"server/logging"
+
+	"github.com/gin-gonic/gin"
+)
 
 func ConnectPoint(c *gin.Context) {
-	c.JSON(200, gin.H{"code": "successful ping"})
+	clientIP := c.ClientIP()
+	c.JSON(http.StatusOK, gin.H{"out": "Успешное подключение к серверу!"})
+	logging.Log.Info("Кто то подключился к машине: " + clientIP)
 }
