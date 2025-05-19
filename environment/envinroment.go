@@ -21,6 +21,6 @@ func InitEnv() {
 	}
 
 	Env = environment{
-		AccessKey: os.Getenv("API_ACCESS_KEY"),
+		AccessKey: os.Getenv("API_KEY_ACCESS"),
 	}
 }
