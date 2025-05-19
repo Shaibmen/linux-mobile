@@ -1,7 +1,12 @@
 package main
 
-import "server/server"
+import (
+	"server/environment"
+	"server/server"
+)
 
 func main() {
+
+	environment.InitEnv()
 	server.StartServer()
 }
