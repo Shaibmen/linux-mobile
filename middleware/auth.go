@@ -19,6 +19,7 @@ func CheckAuth() gin.HandlerFunc {
 		}
 		token := strings.TrimPrefix(header, "Bearer ")
 		if token != environment.Env.AccessKey {
+			log.Println(environment.Env.AccessKey)
 			log.Println(header)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"out": "не правильный токен"})
 			return
