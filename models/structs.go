@@ -5,7 +5,7 @@ type ErrorLog struct {
 }
 
 type Resource struct {
-	Memory string
+	Memory []string
 	Disk   []string
 	CPU    []string
 }

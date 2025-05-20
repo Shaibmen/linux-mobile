@@ -16,7 +16,7 @@ func ResourceMonitoring(c *gin.Context) {
 		return
 	}
 
-	memLines := strings.TrimSpace(lines[0])
+	memLines := utils.AddLines(lines)
 
 	lines, err = utils.RunAndSplit("df", "-h")
 	if err != nil || len(lines) < 1 {
