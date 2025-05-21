@@ -74,7 +74,6 @@ func ExecuteFile(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
 	c.JSON(http.StatusOK, models.HttpResponse{
 		Out: result,
 	})
