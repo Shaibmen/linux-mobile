@@ -33,7 +33,7 @@ type BashOut struct {
 }
 
 type HttpResponse struct {
-	Out   any `json:"out"`
+	Out   any
 	Error error
 }
 
