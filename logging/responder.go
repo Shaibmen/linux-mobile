@@ -16,7 +16,7 @@ func InitJSONResponder() *JSONResponder {
 
 func (r *JSONResponder) Error(ctx *gin.Context, status int, msg string) {
 	ctx.JSON(status, gin.H{
-		"success": false,
-		"msg":     msg,
+		"Out":   msg,
+		"Error": false,
 	})
 }
