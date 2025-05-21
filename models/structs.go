@@ -20,7 +20,7 @@ type Process struct {
 }
 
 type Folder struct {
-	Files []string
+	Data []string
 }
 
 type File struct {

@@ -42,7 +42,7 @@ func GetFolder(c *gin.Context) {
 		folderLines := utils.AddLines(folder)
 
 		c.JSON(http.StatusOK, models.Folder{
-			Files: folderLines,
+			Data: folderLines,
 		})
 	} else {
 		file, err := os.ReadFile(request.Path)
