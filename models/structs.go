@@ -16,7 +16,7 @@ type Network struct {
 }
 
 type Process struct {
-	Process []string
+	Data []string
 }
 
 type Folder struct {

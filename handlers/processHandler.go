@@ -20,7 +20,7 @@ func GetProcess(c *gin.Context) {
 	processLines := utils.AddLines(process)
 
 	c.JSON(http.StatusOK, models.Process{
-		Process: processLines,
+		Data: processLines,
 	})
 }
 
@@ -46,7 +46,7 @@ func ProcessGrep(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, models.Process{
-		Process: psLines,
+		Data: psLines,
 	})
 }
 
