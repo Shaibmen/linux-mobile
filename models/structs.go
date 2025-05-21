@@ -32,6 +32,11 @@ type BashOut struct {
 	Error string
 }
 
+type HttpResponse struct {
+	Out   any `json:"out"`
+	Error error
+}
+
 type ProcessGrep struct {
 	Prefix string `json:"prefix"`
 }

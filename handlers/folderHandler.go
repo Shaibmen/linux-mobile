@@ -97,14 +97,20 @@ func RemoveAny(c *gin.Context) {
 	switch isdir {
 	case false:
 		os.Remove(request.Path)
-		c.JSON(http.StatusOK, gin.H{"out": "Удаление завершено"})
+		c.JSON(http.StatusOK, models.HttpResponse{
+			Out: "Удаление завершено",
+		})
 	case true:
 		if request.Force {
 			os.RemoveAll(request.Path)
-			c.JSON(http.StatusOK, gin.H{"out": "Форсированое удаление завершено"})
+			c.JSON(http.StatusOK, models.HttpResponse{
+				Out: "Форсированое удаление завершено",
+			})
 		} else if isempty {
 			os.Remove(request.Path)
-			c.JSON(http.StatusOK, gin.H{"out": "Удаление завершено"})
+			c.JSON(http.StatusOK, models.HttpResponse{
+				Out: "Удаление завершено",
+			})
 		} else {
 			utils.RespondWithError(c, http.StatusBadRequest, "Папка не пуста воспользуйтесь флагом Force", err)
 			return

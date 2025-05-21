@@ -1,9 +1,13 @@
 package logging
 
-import "github.com/gin-gonic/gin"
+import (
+	"server/models"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Responder interface {
-	Error(ctx *gin.Context, status int, msg string)
+	Error(ctx *gin.Context, status int, msg string, err error)
 }
 
 var ResponseJSON Responder
@@ -14,9 +18,9 @@ func InitJSONResponder() *JSONResponder {
 	return &JSONResponder{}
 }
 
-func (r *JSONResponder) Error(ctx *gin.Context, status int, msg string) {
-	ctx.JSON(status, gin.H{
-		"Out":   msg,
-		"Error": false,
+func (r *JSONResponder) Error(ctx *gin.Context, status int, msg string, err error) {
+	ctx.JSON(status, models.HttpResponse{
+		Out:   msg,
+		Error: err,
 	})
 }

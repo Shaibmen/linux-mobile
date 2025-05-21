@@ -97,6 +97,6 @@ func HomeDir() string {
 }
 
 func RespondWithError(c *gin.Context, status int, msg string, err error) {
-	logging.ResponseJSON.Error(c, status, msg)
+	logging.ResponseJSON.Error(c, status, msg, err)
 	logging.Log.Error(msg, err)
 }

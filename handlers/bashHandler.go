@@ -19,12 +19,14 @@ func CreateBash(c *gin.Context) {
 
 	const bashconst = "#!/bin/bash\n\n"
 
+	filepath := homedir + "/bash_scripts/" + request.NameField + ".sh"
+
 	if err := c.BindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неверные данные", err)
 		return
 	}
 
-	file, err := os.Create(homedir + "/bash_scripts/" + request.NameField + ".sh")
+	file, err := os.Create(filepath)
 	if err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка создания bash", err)
 		return
@@ -38,13 +40,15 @@ func CreateBash(c *gin.Context) {
 		return
 	}
 
-	err = os.Chmod(homedir+"/bash_scripts/"+request.NameField+".sh", 0755)
+	err = os.Chmod(filepath, 0755)
 	if err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Не получается присвоить права", err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"out": "скрипт создан"})
+	c.JSON(http.StatusOK, models.HttpResponse{
+		Out: "Скрипт создан " + filepath,
+	})
 }
 
 func ExecuteFile(c *gin.Context) {
@@ -71,4 +75,7 @@ func ExecuteFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, result)
+	c.JSON(http.StatusOK, models.HttpResponse{
+		Out: result,
+	})
 }
