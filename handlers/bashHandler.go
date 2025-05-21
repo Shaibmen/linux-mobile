@@ -66,7 +66,7 @@ func ExecuteFile(c *gin.Context) {
 	output, err := cmd.CombinedOutput()
 	result := models.BashOut{
 		Out:   string(output),
-		Error: "",
+		Error: " ",
 	}
 	if err != nil {
 		result.Error = err.Error()
@@ -74,7 +74,5 @@ func ExecuteFile(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.HttpResponse{
-		Out: result,
-	})
+	c.JSON(http.StatusOK, result)
 }
