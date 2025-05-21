@@ -17,6 +17,8 @@ func CreateBash(c *gin.Context) {
 
 	var request structs.BashFile
 
+	const bashconst = "#!/bin/bash\n\n"
+
 	if err := c.BindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неверные данные", err)
 		return
@@ -27,7 +29,7 @@ func CreateBash(c *gin.Context) {
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка создания bash", err)
 		return
 	}
-	_, err = file.WriteString(request.TextField)
+	_, err = file.WriteString(bashconst + request.TextField)
 	if err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка записи bash", err)
 		return
