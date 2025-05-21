@@ -29,6 +29,9 @@ func CreateBash(c *gin.Context) {
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка создания bash", err)
 		return
 	}
+
+	defer file.Close()
+
 	_, err = file.WriteString(bashconst + request.TextField)
 	if err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка записи bash", err)
