@@ -24,7 +24,7 @@ type Folder struct {
 }
 
 type File struct {
-	Data string
+	Data []string
 }
 
 type BashOut struct {

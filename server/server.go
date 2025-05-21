@@ -28,6 +28,8 @@ func StartServer() {
 		authorized.POST("/folder/remove", handlers.RemoveAny)
 
 		authorized.GET("/cpu/get", handlers.GetCPU)
+
+		authorized.GET("/logs", handlers.GetLogs)
 	}
 
 	server.Run(":3000")

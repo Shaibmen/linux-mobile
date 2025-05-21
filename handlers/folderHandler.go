@@ -50,8 +50,13 @@ func GetFolder(c *gin.Context) {
 			utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся прочитать файл", err)
 			return
 		}
+		lines, err := utils.Split(file)
+		if err != nil {
+			utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся запарсить файл", err)
+			return
+		}
 		c.JSON(http.StatusOK, models.File{
-			Data: string(file),
+			Data: lines,
 		})
 	}
 
