@@ -19,12 +19,12 @@ func CreateBash(c *gin.Context) {
 
 	const bashconst = "#!/bin/bash\n\n"
 
-	filepath := homedir + "/bash_scripts/" + request.NameField + ".sh"
-
 	if err := c.BindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неверные данные", err)
 		return
 	}
+
+	filepath := homedir + "/bash_scripts/" + request.NameField + ".sh"
 
 	file, err := os.Create(filepath)
 	if err != nil {
