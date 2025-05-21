@@ -83,11 +83,6 @@ func RemoveAny(c *gin.Context) {
 		utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка проверки на папку", err)
 		return
 	}
-	isempty, err := utils.IsDirEmpty(request.Path)
-	if err != nil {
-		utils.RespondWithError(c, http.StatusInternalServerError, "Проверка на вложенность папки не удалась", err)
-		return
-	}
 
 	if !utils.IsSafePath(request.Path) {
 		utils.RespondWithError(c, http.StatusInternalServerError, "Запрещённый путь", err)
@@ -101,6 +96,11 @@ func RemoveAny(c *gin.Context) {
 			Out: "Удаление завершено",
 		})
 	case true:
+		isempty, err := utils.IsDirEmpty(request.Path)
+		if err != nil {
+			utils.RespondWithError(c, http.StatusInternalServerError, "Проверка на вложенность папки не удалась", err)
+			return
+		}
 		if request.Force {
 			os.RemoveAll(request.Path)
 			c.JSON(http.StatusOK, models.HttpResponse{
