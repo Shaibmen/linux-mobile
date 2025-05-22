@@ -50,6 +50,9 @@ func AddLines(lines []string) []string {
 }
 
 func IsSafePath(path string) bool {
+
+	path = strings.TrimSpace(path)
+
 	unsafe := []string{"/", "/bin", "/sbin", "/usr", "/lib", "/lib64", "/etc", "/var", "/boot", "/dev", "/proc", "/sys", "/root"}
 	for _, p := range unsafe {
 		if path == p || strings.HasPrefix(path, p+"/") {
