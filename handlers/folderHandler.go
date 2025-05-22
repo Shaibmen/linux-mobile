@@ -102,12 +102,18 @@ func RemoveAny(c *gin.Context) {
 			return
 		}
 		if request.Force {
-			os.RemoveAll(request.Path)
+			if err := os.RemoveAll(request.Path); err != nil {
+				utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка удаления файла", err)
+				return
+			}
 			c.JSON(http.StatusOK, models.HttpResponse{
 				Out: "Форсированое удаление завершено",
 			})
 		} else if isempty {
-			os.Remove(request.Path)
+			if err := os.Remove(request.Path); err != nil {
+				utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка удаления файла", err)
+				return
+			}
 			c.JSON(http.StatusOK, models.HttpResponse{
 				Out: "Удаление завершено",
 			})
