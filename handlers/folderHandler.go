@@ -84,8 +84,8 @@ func RemoveAny(c *gin.Context) {
 		return
 	}
 
-	if !utils.IsSafePath(request.Path) {
-		utils.RespondWithError(c, http.StatusInternalServerError, "Запрещённый путь", err)
+	if !utils.IsSafePath(request.Path) && request.IgnoreAlert == false {
+		utils.RespondWithError(c, http.StatusInternalServerError, "Взаимодействие в этой директории может вызвать крах системы. \n Действуйте на свой страх и риск.", err)
 		return
 	}
 

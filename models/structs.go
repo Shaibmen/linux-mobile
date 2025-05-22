@@ -46,8 +46,9 @@ type PID struct {
 }
 
 type Dir struct {
-	Path  string `json:"path"`
-	Force bool   `json:"force"`
+	Path        string `json:"path"`
+	Force       bool   `json:"force"`
+	IgnoreAlert bool   `json:"ignorealert"`
 }
 
 type BashFile struct {
