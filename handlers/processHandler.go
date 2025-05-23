@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"os/exec"
+	"server/logging"
 	"server/models"
 	"server/utils"
 	"strings"
@@ -11,6 +12,8 @@ import (
 )
 
 func GetProcess(c *gin.Context) {
+
+	logging.Log.Info("Получение процессов")
 
 	process, err := utils.RunAndSplit("top", "-b", "-n", "1")
 	if err != nil {
@@ -51,6 +54,9 @@ func ProcessGrep(c *gin.Context) {
 }
 
 func Kill(c *gin.Context) {
+
+	logging.Log.Info("Kill процесса")
+
 	var request models.PID
 	if err := c.ShouldBindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "не правильные данные", err)
@@ -67,6 +73,9 @@ func Kill(c *gin.Context) {
 }
 
 func Terminate(c *gin.Context) {
+
+	logging.Log.Info("Terminate процесса")
+
 	var request models.PID
 	if err := c.ShouldBindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "не правильные данные", err)

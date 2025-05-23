@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"server/logging"
 	"server/models"
 	"server/utils"
 	"strings"
@@ -10,6 +11,9 @@ import (
 )
 
 func ResourceMonitoring(c *gin.Context) {
+
+	logging.Log.Info("Получение ресурсов системы")
+
 	lines, err := utils.RunAndSplit("free", "-h")
 	if err != nil || len(lines) < 2 {
 		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на ОЗУ", err)
@@ -47,6 +51,9 @@ func ResourceMonitoring(c *gin.Context) {
 }
 
 func NetworkMonitoring(c *gin.Context) {
+
+	logging.Log.Info("Получение сетевой информации системы")
+
 	netstat, err := utils.RunAndSplit("netstat", "-i")
 	if err != nil {
 		utils.RespondWithError(c, http.StatusInternalServerError, "Не удалось сформиовать ответ на NetStat", err)

@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"os"
+	"server/logging"
 	"server/models"
 	"server/utils"
 
@@ -10,6 +11,9 @@ import (
 )
 
 func GetLogs(c *gin.Context) {
+
+	logging.Log.Info("Получение логов")
+
 	path := "./app.log"
 	file, err := os.ReadFile(path)
 	if err != nil {

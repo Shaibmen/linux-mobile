@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"server/logging"
 	"server/models"
 	structs "server/models"
 	"server/utils"
@@ -12,6 +13,8 @@ import (
 )
 
 func CreateBash(c *gin.Context) {
+
+	logging.Log.Info("Создание баш скрипта")
 
 	homedir := utils.HomeDir()
 
@@ -52,6 +55,8 @@ func CreateBash(c *gin.Context) {
 }
 
 func ExecuteFile(c *gin.Context) {
+
+	logging.Log.Info("Выполнение баш скрипта")
 
 	homedir := utils.HomeDir()
 

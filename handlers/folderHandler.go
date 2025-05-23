@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"os"
+	"server/logging"
 	"server/models"
 	"server/utils"
 
@@ -10,6 +11,9 @@ import (
 )
 
 func GetFolder(c *gin.Context) {
+
+	logging.Log.Info("Получение директории")
+
 	var request models.Dir
 	if err := c.ShouldBindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неправильные данные", err)
@@ -63,6 +67,9 @@ func GetFolder(c *gin.Context) {
 }
 
 func RemoveAny(c *gin.Context) {
+
+	logging.Log.Info("Удаление директории")
+
 	var request models.Dir
 	if err := c.ShouldBindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неправильные данные", err)
@@ -91,7 +98,10 @@ func RemoveAny(c *gin.Context) {
 
 	switch isdir {
 	case false:
-		os.Remove(request.Path)
+		if err := os.Remove(request.Path); err != nil {
+			utils.RespondWithError(c, http.StatusInternalServerError, "Ошибка удаления файла", err)
+			return
+		}
 		c.JSON(http.StatusOK, models.HttpResponse{
 			Out: "Удаление завершено",
 		})
