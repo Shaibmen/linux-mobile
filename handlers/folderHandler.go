@@ -92,7 +92,7 @@ func RemoveAny(c *gin.Context) {
 	}
 
 	if !utils.IsSafePath(request.Path) && request.IgnoreAlert == false {
-		utils.RespondWithError(c, http.StatusConflict, "Взаимодействие в этой директории может вызвать крах системы. \n Действуйте на свой страх и риск.", err)
+		utils.RespondWithError(c, http.StatusConflict, "Взаимодействие в этой директории может вызвать крах системы. \nДействуйте на свой страх и риск.", err)
 		return
 	}
 
