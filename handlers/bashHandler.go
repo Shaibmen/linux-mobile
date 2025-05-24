@@ -31,6 +31,20 @@ func CreateBash(c *gin.Context) {
 
 	file, err := os.Create(filepath)
 	if err != nil {
+		switch {
+		case os.IsNotExist(err):
+			err = os.Mkdir(homedir+"/bash_scripts", 0755)
+			if err != nil {
+				logging.Log.Error("Не удалось создать директорию для хранения скриптов в "+homedir, err)
+				utils.RespondWithError(c, http.StatusBadRequest, "Не удалось создать директорию для хранения скриптов", err)
+				return
+			}
+			logging.Log.Info("Была создана директория для скриптов в домашнем каталоге пользователя - " + homedir)
+		case os.IsPermission(err):
+			logging.Log.Error("У пользователя нет прав для исполнения баш скриптов в "+homedir, err)
+			utils.RespondWithError(c, http.StatusBadRequest, "У пользователя нет прав для исполнения баш скриптов", err)
+			return
+		}
 		utils.RespondWithError(c, http.StatusBadRequest, "Ошибка создания bash", err)
 		return
 	}
