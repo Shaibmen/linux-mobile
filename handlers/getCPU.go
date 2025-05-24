@@ -12,7 +12,7 @@ import (
 
 var (
 	cpuValue []float64
-	mu       sync.Mutex
+	muCpu    sync.Mutex
 )
 
 func CpuData() {
@@ -23,12 +23,12 @@ func CpuData() {
 			continue
 		}
 
-		mu.Lock()
+		muCpu.Lock()
 		cpuValue = append(cpuValue, percent[0])
 		if len(cpuValue) > 10 {
 			cpuValue = cpuValue[1:]
 		}
-		mu.Unlock()
+		muCpu.Unlock()
 
 		time.Sleep(5 * time.Second)
 	}
@@ -36,9 +36,9 @@ func CpuData() {
 
 func GetCPU(c *gin.Context) {
 
-	mu.Lock()
+	muCpu.Lock()
 	values := append([]float64{}, cpuValue...)
-	mu.Unlock()
+	muCpu.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{"cpu": values})
 

@@ -22,6 +22,8 @@ func main() {
 
 	go handlers.CpuData()
 	logging.Log.Info("Сбор инфомрации о процессоре начат")
+	go handlers.RamData()
+	logging.Log.Info("Сбор инфомрации о оперативной памяти начат")
 
 	logging.Log.Info("Сервер запущен")
 	server.StartServer()

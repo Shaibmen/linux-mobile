@@ -28,6 +28,7 @@ func StartServer() {
 		authorized.POST("/folder/remove", handlers.RemoveAny)
 
 		authorized.GET("/cpu/get", handlers.GetCPU)
+		authorized.GET("/ram/get", handlers.GetRAM)
 
 		authorized.GET("/logs", handlers.GetLogs)
 	}
