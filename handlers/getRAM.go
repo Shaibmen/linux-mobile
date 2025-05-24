@@ -39,6 +39,6 @@ func GetRAM(c *gin.Context) {
 	value := append([]float64{}, ramValue...)
 	muRam.Unlock()
 
-	c.JSON(http.StatusOK, gin.H{"ram:": value})
+	c.JSON(http.StatusOK, gin.H{"ram": value})
 
 }
