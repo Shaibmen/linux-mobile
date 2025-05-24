@@ -12,7 +12,6 @@ import (
 
 var (
 	ramValue []float64
-	ramAll   uint64
 	muRam    sync.Mutex
 )
 
@@ -29,7 +28,6 @@ func RamData() {
 		if len(ramValue) > 10 {
 			ramValue = ramValue[1:]
 		}
-		ramAll = memory.Total
 		muRam.Unlock()
 
 		time.Sleep(5 * time.Second)
@@ -39,12 +37,9 @@ func RamData() {
 func GetRAM(c *gin.Context) {
 	muRam.Lock()
 	value := append([]float64{}, ramValue...)
-	all := ramAll
 	muRam.Unlock()
 
 	c.JSON(http.StatusOK, gin.H{
-		"ram": value,
-		"all": all,
-	})
+		"ram": value})
 
 }
