@@ -22,6 +22,21 @@ func CreateBash(c *gin.Context) {
 
 	const bashconst = "#!/bin/bash\n\n"
 
+	exists, err := utils.CheckPath(homedir + "/bash_scripts")
+	if err != nil {
+		utils.RespondWithError(c, http.StatusInternalServerError, "Не удаётся проверить путь", err)
+		return
+	}
+	if !exists {
+		err = os.Mkdir(homedir+"/bash_scripts", 0755)
+		if err != nil {
+			logging.Log.Error("Не удалось создать директорию для хранения скриптов в "+homedir, err)
+			utils.RespondWithError(c, http.StatusBadRequest, "Не удалось создать директорию для хранения скриптов", err)
+			return
+		}
+		logging.Log.Info("Была создана директория для скриптов в домашнем каталоге пользователя - " + homedir)
+	}
+
 	if err := c.BindJSON(&request); err != nil {
 		utils.RespondWithError(c, http.StatusBadRequest, "Неверные данные", err)
 		return
@@ -32,14 +47,6 @@ func CreateBash(c *gin.Context) {
 	file, err := os.Create(filepath)
 	if err != nil {
 		switch {
-		case os.IsNotExist(err):
-			err = os.Mkdir(homedir+"/bash_scripts", 0755)
-			if err != nil {
-				logging.Log.Error("Не удалось создать директорию для хранения скриптов в "+homedir, err)
-				utils.RespondWithError(c, http.StatusBadRequest, "Не удалось создать директорию для хранения скриптов", err)
-				return
-			}
-			logging.Log.Info("Была создана директория для скриптов в домашнем каталоге пользователя - " + homedir)
 		case os.IsPermission(err):
 			logging.Log.Error("У пользователя нет прав для исполнения баш скриптов в "+homedir, err)
 			utils.RespondWithError(c, http.StatusBadRequest, "У пользователя нет прав для исполнения баш скриптов", err)
