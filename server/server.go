@@ -23,6 +23,7 @@ func StartServer() {
 
 		authorized.POST("/bash/create", handlers.CreateBash)
 		authorized.POST("/bash/execute", handlers.ExecuteFile)
+		authorized.GET("/bash/scripts", handlers.GetScripts)
 
 		authorized.POST("/folder", handlers.GetFolder)
 		authorized.POST("/folder/remove", handlers.RemoveAny)

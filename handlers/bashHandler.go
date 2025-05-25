@@ -102,3 +102,21 @@ func ExecuteFile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, result)
 }
+
+func GetScripts(c *gin.Context) {
+	logging.Log.Info("Получение баш скриптов")
+
+	homedir := utils.HomeDir()
+	scriptsPath := homedir + "/bash_scripts"
+
+	scripts, err := utils.RunAndSplit("ls", "-l", scriptsPath)
+	if err != nil {
+		utils.RespondWithError(c, http.StatusBadRequest, "Не получается найти директорию с скриптами", err)
+		return
+	}
+
+	scriptsLines := utils.AddLines(scripts)
+	c.JSON(http.StatusOK, models.Folder{
+		Data: scriptsLines,
+	})
+}
