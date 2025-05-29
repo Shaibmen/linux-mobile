@@ -31,7 +31,7 @@ chmod +x "$INSTALL_DIR/linux-mobile"
 echo -n "Введите API ключ: "
 read -r API_KEY
 
-echo "API_KEY=$API_KEY" > "$ENV_FILE"
+echo "API_KEY=$API_KEY_ACCESS" > "$ENV_FILE"
 echo "PORT=$PORT" >> "$ENV_FILE"
 
 chmod 600 "$ENV_FILE"
