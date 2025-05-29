@@ -66,7 +66,7 @@ if command -v ufw &>/dev/null; then
     ufw allow $PORT/tcp
     echo "Открыт порт $PORT через ufw"
 else
-    echo "⚠️ UFW не установлен. Убедитесь, что порт $PORT открыт вручную."
+    echo "UFW не установлен. Убедитесь, что порт $PORT открыт вручную."
 fi
 
-echo "✅ $APP_NAME установлен и работает на порту $PORT"
+echo "$APP_NAME установлен и работает на порту $PORT"
