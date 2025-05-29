@@ -2,58 +2,71 @@
 
 set -e
 
-echo "=== Westeros Installer ==="
+APP_NAME="linux-mobile"
+INSTALL_DIR="/opt/$APP_NAME"
+SERVICE_FILE="/etc/systemd/system/$APP_NAME.service"
+ENV_FILE="$INSTALL_DIR/.env"
+PORT=3000
 
-# Проверка прав
+echo "=== Установка $APP_NAME ==="
+
+# Проверка прав root
 if [[ $EUID -ne 0 ]]; then
-   echo "Запустите скрипт от root: sudo ./install.sh"
-   exit 1
+    echo "Этот скрипт нужно запускать через sudo."
+    exit 1
 fi
 
-# Запрос переменных окружения
-read -p "Введите API_KEY: " API_KEY
+# Проверка наличия бинарника
+if [[ ! -f "linux-mobile" ]]; then
+    echo "Файл linux-mobile не найден в текущей директории."
+    exit 1
+fi
 
-# Установка сервиса в /opt
-INSTALL_DIR="/opt/westeros"
+# Создание директории
 mkdir -p "$INSTALL_DIR"
-cp linux-mobile "$INSTALL_DIR"
-chmod 700 "$INSTALL_DIR/linux-mobile"
+cp linux-mobile "$INSTALL_DIR/"
+chmod +x "$INSTALL_DIR/linux-mobile"
 
-# Создание .env
-echo "API_KEY=$API_KEY" > "$INSTALL_DIR/.env"
-chmod 600 "$INSTALL_DIR/.env"
+# Заполнение .env
+echo -n "Введите API ключ: "
+read -r API_KEY
 
-# systemd unit
-cat <<EOF > /etc/systemd/system/westeros.service
+echo "API_KEY=$API_KEY" > "$ENV_FILE"
+echo "PORT=$PORT" >> "$ENV_FILE"
+
+chmod 600 "$ENV_FILE"
+chown root:root "$ENV_FILE"
+
+# Создание systemd юнита
+cat > "$SERVICE_FILE" <<EOF
 [Unit]
-Description=Westeros Server
+Description=Linux Mobile Server
 After=network.target
 
 [Service]
-Type=simple
-WorkingDirectory=$INSTALL_DIR
 ExecStart=$INSTALL_DIR/linux-mobile
+WorkingDirectory=$INSTALL_DIR
+EnvironmentFile=$ENV_FILE
 Restart=always
-EnvironmentFile=$INSTALL_DIR/.env
+RestartSec=3
+User=root
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# Разрешить порт 3000
-if command -v ufw > /dev/null; then
-  ufw allow 3000/tcp
-elif command -v firewall-cmd > /dev/null; then
-  firewall-cmd --add-port=3000/tcp --permanent
-  firewall-cmd --reload
-else
-  iptables -A INPUT -p tcp --dport 3000 -j ACCEPT
-fi
-
-# Запуск сервиса
+# Активация сервиса
 systemctl daemon-reexec
 systemctl daemon-reload
-systemctl enable westeros
-systemctl start westeros
+systemctl enable "$APP_NAME"
+systemctl restart "$APP_NAME"
 
-echo "Установка завершена. Приложение запущено и добавлено в автозагрузку."
+# Открытие порта 3000
+if command -v ufw &>/dev/null; then
+    ufw allow $PORT/tcp
+    echo "Открыт порт $PORT через ufw"
+else
+    echo "⚠️ UFW не установлен. Убедитесь, что порт $PORT открыт вручную."
+fi
+
+echo "✅ $APP_NAME установлен и работает на порту $PORT"
